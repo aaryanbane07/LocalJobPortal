@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Frequently Asked Questions - Local Job Portal{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<section class="page-header">
+  <div class="container">
+    <span class="section-tag"><i class="ri-question-line"></i> Help Center</span>
+    <h1>Frequently Asked Questions</h1>
+    <p>Everything you need to know about navigating Local Job Portal as a student, employer, or administrator</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="faq-list">
+
+      <div class="faq-item open">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span><i class="ri-money-dollar-circle-line" style="color:var(--primary); margin-right:8px;"></i> Is Local Job Portal completely free to use?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Yes! Creating an account, browsing listings, and applying for internships and jobs is 100% free for all students. Verified local employers can also register and post job openings at no charge.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span><i class="ri-file-user-line" style="color:var(--accent); margin-right:8px;"></i> How do I apply for jobs on the portal?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>First, register as a student and complete your profile under "Edit Profile" by uploading your master PDF resume. Next, visit the "Browse Jobs" page, choose any active opening, and click "Submit Application Now". Your profile details and attached resume will be sent directly to the employer.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span><i class="ri-file-pdf-line" style="color:var(--error); margin-right:8px;"></i> What resume format is accepted?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>We strictly accept PDF (.pdf) format for resumes up to 5 MB. PDF files ensure universal layout fidelity and virus-free viewing across all devices and recruiter systems.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span><i class="ri-building-line" style="color:var(--warning); margin-right:8px;"></i> How do companies review candidates?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Employers log in to their dashboard and click "Candidates" under any job listing. They can view candidate contact details, inspect skills tags, download the student's PDF resume with one click, and update the application status (Applied, Shortlisted, Selected, Rejected) in real time.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span><i class="ri-lock-password-line" style="color:var(--primary); margin-right:8px;"></i> What should I do if I forget my password?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Click the "Forgot Password?" link on either the Student or Employer login page. Enter your registered email address and you can instantly set a new, secure password.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span><i class="ri-shield-check-line" style="color:var(--success); margin-right:8px;"></i> How does the platform ensure safety and authenticity?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <p>Platform administrators monitor all newly registered student and employer accounts via the Admin Console. Any suspicious or spam accounts can be blocked or permanently removed instantly.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Help Box -->
+    <div class="glass-card" style="max-width: 800px; margin: 48px auto 0; text-align: center; padding: 36px;">
+      <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">Still have questions?</h3>
+      <p style="font-size: 0.9375rem; color: var(--text-muted); margin-bottom: 20px;">
+        Can't find the answer you're looking for? Reach out to our campus support desk anytime.
+      </p>
+      <a href="{{ url_for('contact') }}" class="btn btn-gradient">
+        <i class="ri-mail-send-line"></i> Contact Support
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Employer Registration - Local Job Portal{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+  <div class="auth-card auth-card-wide">
+    <div class="auth-header">
+      <div class="auth-icon-badge" style="background: var(--accent-light); color: var(--accent);">
+        <i class="ri-community-fill"></i>
+      </div>
+      <h1 class="auth-title">Register Your Company</h1>
+      <p class="auth-subtitle">Create an employer account to post openings and connect with local student talent</p>
+    </div>
+
+    <form method="POST" id="companyRegisterForm" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="company_name">Company / Organization Name *</label>
+          <input type="text" name="company_name" id="company_name" placeholder="e.g. Apex Tech Solutions" required>
+          <span class="error-msg" id="company_nameError"></span>
+        </div>
+        <div class="form-group">
+          <label for="email">Official Company Email *</label>
+          <input type="email" name="email" id="email" placeholder="e.g. contact@apextech.com" required>
+          <span class="error-msg" id="emailError"></span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="password">Password (min 6 chars) *</label>
+          <input type="password" name="password" id="password" placeholder="Create strong password" required>
+          <span class="error-msg" id="passwordError"></span>
+        </div>
+        <div class="form-group">
+          <label for="phone">Contact Phone Number (10 digits) *</label>
+          <input type="tel" name="phone" id="phone" maxlength="10" placeholder="e.g. 9876543210" required>
+          <span class="error-msg" id="phoneError"></span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="website">Company Website</label>
+          <input type="url" name="website" id="website" placeholder="https://www.yourcompany.com">
+        </div>
+        <div class="form-group">
+          <label for="address">Office Location / Address</label>
+          <input type="text" name="address" id="address" placeholder="e.g. City Tech Park, Mumbai">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Company Bio / Overview</label>
+        <textarea name="description" id="description" rows="3" placeholder="Briefly describe what your organization does and the roles you usually hire for..."></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-gradient btn-lg full-width">
+        <i class="ri-building-line"></i> Complete Employer Registration
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an employer account? <a href="{{ url_for('company_login') }}">Sign In here</a></p>
+      <p style="margin-top: 8px; font-size: 0.8125rem;">
+        Looking for a job? <a href="{{ url_for('student_register') }}">Register as Student</a>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+document.getElementById('companyRegisterForm').addEventListener('submit', function(e){
+  if(!validateCompanyRegisterForm()) e.preventDefault();
+});
+</script>
+{% endblock %}

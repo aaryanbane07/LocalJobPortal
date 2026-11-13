@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Employer Dashboard - Local Job Portal{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<section class="dashboard-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-profile">
+      {% if company.logo %}
+        <img src="{{ url_for('static', filename='uploads/logos/' ~ company.logo) }}" alt="{{ company.company_name }}" class="sidebar-avatar">
+      {% else %}
+        <div class="sidebar-avatar-placeholder">{{ company.company_name[0]|upper }}</div>
+      {% endif %}
+      <h4>{{ company.company_name }}</h4>
+      <span class="badge badge-role"><i class="ri-building-line"></i> Employer</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('company_dashboard') }}" class="active"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+      <a href="{{ url_for('post_job') }}"><i class="ri-add-box-line nav-icon"></i> Post New Job</a>
+      <a href="{{ url_for('company_profile') }}"><i class="ri-building-line nav-icon"></i> Company Profile</a>
+      <a href="{{ url_for('settings') }}"><i class="ri-settings-3-line nav-icon"></i> Settings</a>
+      <a href="{{ url_for('company_logout') }}" class="logout-link"><i class="ri-logout-box-r-line nav-icon"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div>
+        <h1 class="dashboard-title">Welcome, {{ company.company_name }} 👋</h1>
+        <p class="dashboard-subtitle">Manage your company job openings and review incoming candidate applications</p>
+      </div>
+      <a href="{{ url_for('post_job') }}" class="btn btn-primary">
+        <i class="ri-add-circle-line"></i> Post New Job
+      </a>
+    </div>
+
+    <!-- Metrics Cards -->
+    <div class="dcard-grid">
+      <div class="dcard">
+        <div class="dcard-icon icon-blue">
+          <i class="ri-file-list-3-line"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ total_jobs }}</h2>
+          <p>Total Postings</p>
+        </div>
+      </div>
+
+      <div class="dcard">
+        <div class="dcard-icon icon-green">
+          <i class="ri-checkbox-circle-line"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ open_jobs }}</h2>
+          <p>Active Live Openings</p>
+        </div>
+      </div>
+
+      <div class="dcard">
+        <div class="dcard-icon icon-purple">
+          <i class="ri-team-line"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ total_applicants }}</h2>
+          <p>Total Candidates Applied</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job Postings Table Section -->
+    <div class="section-header-row" style="margin-top: 24px; margin-bottom: 16px;">
+      <div>
+        <h2 class="section-title-left"><i class="ri-briefcase-line" style="color:var(--primary);"></i> Your Job Postings</h2>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Job Title</th>
+            <th>Location</th>
+            <th>Type</th>
+            <th>Application Deadline</th>
+            <th>Status</th>
+            <th>Manage / Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for job in jobs %}
+            <tr>
+              <td>
+                <strong style="color:var(--text-main); font-weight:700;">{{ job.title }}</strong>
+              </td>
+              <td>
+                <span style="font-size:0.875rem; color:var(--text-muted);"><i class="ri-map-pin-line"></i> {{ job.location }}</span>
+              </td>
+              <td>
+                <span class="badge badge-type">{{ job.job_type }}</span>
+              </td>
+              <td>
+                <span style="font-size:0.875rem; color:var(--text-secondary);">{{ job.last_date }}</span>
+              </td>
+              <td>
+                <span class="status-pill status-{{ job.status }}">
+                  {{ job.status }}
+                </span>
+              </td>
+              <td>
+                <div class="action-cell">
+                  <a href="{{ url_for('view_applicants', job_id=job.id) }}" class="btn btn-sm btn-primary" title="View Applicants">
+                    <i class="ri-user-search-line"></i> Candidates
+                  </a>
+                  <a href="{{ url_for('edit_job', job_id=job.id) }}" class="btn-icon" title="Edit Job">
+                    <i class="ri-edit-line"></i>
+                  </a>
+                  <form method="POST" action="{{ url_for('delete_job', job_id=job.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to permanently delete this job posting?');">
+                    <button type="submit" class="btn-icon btn-icon-danger" title="Delete Job">
+                      <i class="ri-delete-bin-line"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="6">
+                <div class="empty-state" style="margin: 20px auto;">
+                  <div class="empty-state-icon">
+                    <i class="ri-add-circle-line"></i>
+                  </div>
+                  <h3>No job postings yet</h3>
+                  <p>Create your first job listing to start receiving qualified student applications.</p>
+                  <a href="{{ url_for('post_job') }}" class="btn btn-primary">
+                    <i class="ri-add-line"></i> Post a Job Opening
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</section>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Manage Companies - Admin Console{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<section class="dashboard-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <nav class="sidebar-nav sidebar-nav-top">
+      <a href="{{ url_for('admin_dashboard') }}"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+      <a href="{{ url_for('manage_students') }}"><i class="ri-graduation-cap-line nav-icon"></i> Manage Students</a>
+      <a href="{{ url_for('manage_companies') }}" class="active"><i class="ri-building-line nav-icon"></i> Manage Companies</a>
+      <a href="{{ url_for('manage_jobs') }}"><i class="ri-briefcase-line nav-icon"></i> Manage Jobs</a>
+      <a href="{{ url_for('admin_logout') }}" class="logout-link"><i class="ri-logout-box-r-line nav-icon"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div>
+        <h1 class="dashboard-title">Partner Companies Directory</h1>
+        <p class="dashboard-subtitle">Total {{ companies|length }} registered employer account{% if companies|length != 1 %}s{% endif %}</p>
+      </div>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-outline">
+        <i class="ri-arrow-left-line"></i> Dashboard
+      </a>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Company Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Office Location</th>
+            <th>Account Status</th>
+            <th>Moderation Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in companies %}
+            <tr>
+              <td>
+                <strong style="color:var(--text-main);"><i class="ri-building-line" style="color:var(--text-subtle);"></i> {{ c.company_name }}</strong>
+              </td>
+              <td>
+                <span style="font-size:0.875rem; color:var(--text-secondary);">{{ c.email }}</span>
+              </td>
+              <td>
+                <span style="font-size:0.875rem; color:var(--text-muted);">{{ c.phone }}</span>
+              </td>
+              <td>
+                <span style="font-size:0.875rem; color:var(--text-secondary);">{{ c.address or "Not Specified" }}</span>
+              </td>
+              <td>
+                <span class="status-pill status-{{ c.status }}">
+                  {{ c.status }}
+                </span>
+              </td>
+              <td>
+                <div class="action-cell">
+                  <form method="POST" action="{{ url_for('toggle_company', company_id=c.id) }}" style="display:inline;">
+                    <button type="submit" class="btn-icon {% if c.status == 'active' %}btn-icon-danger{% else %}btn-icon-success{% endif %}" title="{% if c.status == 'active' %}Block Account{% else %}Unblock Account{% endif %}">
+                      {% if c.status == 'active' %}
+                        <i class="ri-forbid-line"></i>
+                      {% else %}
+                        <i class="ri-checkbox-circle-line"></i>
+                      {% endif %}
+                    </button>
+                  </form>
+                  <form method="POST" action="{{ url_for('delete_company', company_id=c.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to permanently delete this company account and all its job postings?');">
+                    <button type="submit" class="btn-icon btn-icon-danger" title="Delete Company Account">
+                      <i class="ri-delete-bin-line"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="6" class="empty-msg">No companies registered yet.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</section>
+{% endblock %}

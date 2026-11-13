@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+{% block title %}Local Job Portal - Find Jobs & Internships Near You{% endblock %}
+
+{% block content %}
+
+<!-- ===========================
+        HERO SECTION
+============================ -->
+<section class="hero">
+  <div class="container hero-content">
+    <div class="hero-badge">
+      <span class="pulse-dot"></span>
+      <span>Empowering Students & Local Employers</span>
+    </div>
+
+    <h1>
+      Launch Your Career With<br>
+      <span class="accent">Verified Local Opportunities</span>
+    </h1>
+
+    <p>
+      Discover premium internships, part-time gigs, and full-time roles from top regional companies. Apply within minutes, track applications in real-time, and kickstart your professional journey.
+    </p>
+
+    <div class="hero-buttons">
+      <a href="{{ url_for('jobs') }}" class="btn btn-lg btn-gradient">
+        <i class="ri-search-line"></i> Browse All Jobs
+      </a>
+      {% if not session.get('user_type') %}
+        <a href="{{ url_for('student_register') }}" class="btn btn-lg btn-outline">
+          <i class="ri-graduation-cap-line"></i> Student Sign Up
+        </a>
+        <a href="{{ url_for('company_register') }}" class="btn btn-lg btn-outline">
+          <i class="ri-building-line"></i> Hire Student Talent
+        </a>
+      {% elif session.get('user_type') == 'student' %}
+        <a href="{{ url_for('student_dashboard') }}" class="btn btn-lg btn-outline">
+          <i class="ri-dashboard-3-line"></i> My Student Dashboard
+        </a>
+      {% elif session.get('user_type') == 'company' %}
+        <a href="{{ url_for('post_job') }}" class="btn btn-lg btn-outline">
+          <i class="ri-add-circle-line"></i> Post a New Job
+        </a>
+      {% endif %}
+    </div>
+
+    <!-- Quick Search Filter Pills -->
+    <div class="hero-search-pills">
+      <span>Popular searches:</span>
+      <a href="{{ url_for('jobs', job_type='Internship') }}" class="hero-search-pill">
+        <i class="ri-sparkling-line" style="color: var(--primary);"></i> Internships
+      </a>
+      <a href="{{ url_for('jobs', job_type='Full-Time') }}" class="hero-search-pill">
+        <i class="ri-briefcase-line" style="color: var(--accent);"></i> Full-Time
+      </a>
+      <a href="{{ url_for('jobs', q='Developer') }}" class="hero-search-pill">
+        <i class="ri-code-s-slash-line" style="color: var(--info);"></i> Developer
+      </a>
+      <a href="{{ url_for('jobs', q='Design') }}" class="hero-search-pill">
+        <i class="ri-palette-line" style="color: #9333ea;"></i> Design
+      </a>
+      <a href="{{ url_for('jobs', q='Marketing') }}" class="hero-search-pill">
+        <i class="ri-megaphone-line" style="color: var(--warning);"></i> Marketing
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===========================
+        METRICS / STATS
+============================ -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon-wrapper">
+          <i class="ri-graduation-cap-fill"></i>
+        </div>
+        <h2>{{ stats.students }}+</h2>
+        <p>Enrolled Student Job Seekers</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrapper" style="background: var(--accent-light); color: var(--accent);">
+          <i class="ri-building-4-fill"></i>
+        </div>
+        <h2>{{ stats.companies }}+</h2>
+        <p>Verified Partner Companies</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrapper" style="background: var(--success-light); color: var(--success);">
+          <i class="ri-briefcase-3-fill"></i>
+        </div>
+        <h2>{{ stats.jobs }}+</h2>
+        <p>Active Job Openings</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===========================
+        FEATURED JOBS
+============================ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header-row">
+      <div>
+        <span class="section-tag"><i class="ri-fire-line"></i> Fresh Openings</span>
+        <h2 class="section-title-left">Latest Opportunities Available Now</h2>
+      </div>
+      <a href="{{ url_for('jobs') }}" class="btn btn-outline">
+        View All Jobs <i class="ri-arrow-right-line"></i>
+      </a>
+    </div>
+
+    <div class="job-grid">
+      {% for job in jobs %}
+        <div class="job-card">
+          <div>
+            <div class="job-card-top">
+              <div class="job-card-header">
+                <div class="company-logo-avatar">
+                  {{ job.company_name[0]|upper }}
+                </div>
+                <div>
+                  <h3 class="job-card-title">{{ job.title }}</h3>
+                  <div class="job-company">
+                    <i class="ri-building-line" style="color: var(--text-subtle);"></i> {{ job.company_name }}
+                  </div>
+                </div>
+              </div>
+              <span class="badge badge-type">{{ job.job_type }}</span>
+            </div>
+
+            <div class="job-meta-list">
+              <div class="job-meta-item">
+                <i class="ri-map-pin-2-line meta-icon"></i>
+                <span>{{ job.location }}</span>
+              </div>
+              <div class="job-meta-item">
+                <i class="ri-money-dollar-circle-line meta-icon"></i>
+                <span class="job-salary-highlight">{{ job.salary }}</span>
+              </div>
+              <div class="job-meta-item">
+                <i class="ri-calendar-event-line meta-icon"></i>
+                <span>Deadline: <strong>{{ job.last_date }}</strong></span>
+              </div>
+            </div>
+
+            {% if job.skills %}
+              <div class="job-skills-chips">
+                {% for skill in job.skills.split(',')[:3] %}
+                  <span class="skill-chip"><i class="ri-hashtag" style="font-size:0.8em;"></i> {{ skill.strip() }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="job-card-footer">
+            <span class="badge" style="background: var(--bg-card-muted); color: var(--text-muted);">
+              <i class="ri-time-line"></i> Active
+            </span>
+            <a href="{{ url_for('job_details', job_id=job.id) }}" class="btn btn-sm btn-gradient">
+              View Details <i class="ri-arrow-right-s-line"></i>
+            </a>
+          </div>
+        </div>
+      {% else %}
+        <div class="empty-state" style="grid-column: 1 / -1;">
+          <div class="empty-state-icon">
+            <i class="ri-folder-open-line"></i>
+          </div>
+          <h3>No jobs posted yet</h3>
+          <p>Be the first company to post an internship or job opening for student talent.</p>
+          <a href="{{ url_for('company_register') }}" class="btn btn-primary">
+            <i class="ri-add-line"></i> Post First Job
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<!-- ===========================
+        WHY CHOOSE US
+============================ -->
+<section class="section" style="background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag"><i class="ri-shield-star-line"></i> Platform Benefits</span>
+      <h2 class="section-title">Built Specially For <span class="accent">Local College Ecosystems</span></h2>
+      <p class="section-subtitle">Cut through the noise of crowded national boards with direct, verified opportunities close to your college campus.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-icon-box">
+          <i class="ri-shield-check-fill"></i>
+        </div>
+        <h3>100% Verified Employers</h3>
+        <p>Every recruiter and company account is manually screened by platform admins to safeguard students from fraudulent listings.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-icon-box" style="background: var(--accent-light); color: var(--accent);">
+          <i class="ri-flashlight-fill"></i>
+        </div>
+        <h3>Instant 1-Click Applications</h3>
+        <p>Maintain your master profile and PDF resume once. Apply to multiple local internships and jobs with just a single click.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-icon-box" style="background: var(--success-light); color: var(--success);">
+          <i class="ri-notification-3-fill"></i>
+        </div>
+        <h3>Real-Time Status Tracking</h3>
+        <p>No more guessing games. Track when your resume is reviewed, shortlisted, or selected with transparent live status badges.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===========================
+        HOW IT WORKS
+============================ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag"><i class="ri-compass-3-line"></i> Easy Workflow</span>
+      <h2 class="section-title">How It Works in <span class="accent">4 Simple Steps</span></h2>
+      <p class="section-subtitle">Get started and connect with local employers in less than 2 minutes.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <span class="step-number">01</span>
+        <div class="step-icon-box">
+          <i class="ri-user-add-line"></i>
+        </div>
+        <h3>Create Your Profile</h3>
+        <p>Register as a student or company. Add your college details, skills, and upload your latest PDF resume.</p>
+      </div>
+
+      <div class="step-card">
+        <span class="step-number">02</span>
+        <div class="step-icon-box" style="background: var(--accent-light); color: var(--accent);">
+          <i class="ri-search-eye-line"></i>
+        </div>
+        <h3>Search & Filter</h3>
+        <p>Filter opportunities by job type, required skills, city location, and salary to find your ideal match.</p>
+      </div>
+
+      <div class="step-card">
+        <span class="step-number">03</span>
+        <div class="step-icon-box" style="background: #f3e8ff; color: #9333ea;">
+          <i class="ri-send-plane-fill"></i>
+        </div>
+        <h3>Submit Application</h3>
+        <p>Submit your application instantly. Employers receive your resume and profile immediately on their dashboard.</p>
+      </div>
+
+      <div class="step-card">
+        <span class="step-number">04</span>
+        <div class="step-icon-box" style="background: var(--success-light); color: var(--success);">
+          <i class="ri-trophy-line"></i>
+        </div>
+        <h3>Get Hired Locally</h3>
+        <p>Receive shortlist notifications, interview updates, and accept selection offers directly from regional recruiters.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===========================
+        CALL TO ACTION
+============================ -->
+<section class="section-tight" style="margin-bottom: 60px;">
+  <div class="container">
+    <div class="cta-card">
+      <h2>Ready to Build Your Career?</h2>
+      <p>Join hundreds of college students and regional companies connecting every single day on Local Job Portal.</p>
+      <div class="cta-buttons">
+        <a href="{{ url_for('student_register') }}" class="btn btn-lg" style="background:#fff; color:var(--primary); font-weight:700; box-shadow: 0 4px 14px rgba(0,0,0,0.15);">
+          <i class="ri-user-star-line"></i> Register as Student
+        </a>
+        <a href="{{ url_for('company_register') }}" class="btn btn-lg btn-outline" style="background:rgba(255,255,255,0.12); color:#fff; border-color:rgba(255,255,255,0.3);">
+          <i class="ri-building-line"></i> Register as Employer
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

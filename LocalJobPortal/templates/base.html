@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4f46e5">
+  <title>{% block title %}Local Job Portal - Discover Local Career Opportunities{% endblock %}</title>
+
+  <!-- Google Fonts & Remix Icon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- ===========================
+          NAVBAR
+  ============================ -->
+  <nav class="navbar" id="mainNavbar">
+    <div class="nav-container">
+      <a href="{{ url_for('index') }}" class="nav-logo">
+        <div class="logo-badge">
+          <i class="ri-briefcase-4-fill"></i>
+        </div>
+        <span>Local<span class="accent">Job</span>Portal</span>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Home</a></li>
+        <li><a href="{{ url_for('jobs') }}" class="{% if request.endpoint == 'jobs' %}active{% endif %}">Browse Jobs</a></li>
+        <li><a href="{{ url_for('about') }}" class="{% if request.endpoint == 'about' %}active{% endif %}">About</a></li>
+        <li><a href="{{ url_for('contact') }}" class="{% if request.endpoint == 'contact' %}active{% endif %}">Contact</a></li>
+        <li><a href="{{ url_for('faq') }}" class="{% if request.endpoint == 'faq' %}active{% endif %}">FAQ</a></li>
+
+        {% if session.get('user_type') == 'student' %}
+          <li>
+            <a href="{{ url_for('student_dashboard') }}" class="btn-nav">
+              <i class="ri-dashboard-3-line"></i> Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('student_logout') }}" class="btn btn-sm btn-ghost" title="Logout">
+              <i class="ri-logout-box-r-line"></i> Logout
+            </a>
+          </li>
+        {% elif session.get('user_type') == 'company' %}
+          <li>
+            <a href="{{ url_for('company_dashboard') }}" class="btn-nav">
+              <i class="ri-building-line"></i> Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('company_logout') }}" class="btn btn-sm btn-ghost" title="Logout">
+              <i class="ri-logout-box-r-line"></i> Logout
+            </a>
+          </li>
+        {% elif session.get('user_type') == 'admin' %}
+          <li>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-nav">
+              <i class="ri-shield-user-line"></i> Admin Panel
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-ghost" title="Logout">
+              <i class="ri-logout-box-r-line"></i> Logout
+            </a>
+          </li>
+        {% else %}
+          <li class="dropdown">
+            <a href="javascript:void(0)" class="btn-nav">
+              <i class="ri-user-shared-line"></i> Sign In / Join <i class="ri-arrow-down-s-line" style="font-size:0.85em; margin-left:2px;"></i>
+            </a>
+            <div class="dropdown-menu">
+              <span class="dropdown-heading"><i class="ri-graduation-cap-line"></i> Job Seekers</span>
+              <a href="{{ url_for('student_login') }}"><i class="ri-login-box-line"></i> Student Login</a>
+              <a href="{{ url_for('student_register') }}"><i class="ri-user-add-line"></i> Student Register</a>
+
+              <div class="dropdown-divider"></div>
+
+              <span class="dropdown-heading"><i class="ri-building-2-line"></i> Employers</span>
+              <a href="{{ url_for('company_login') }}"><i class="ri-login-box-line"></i> Employer Login</a>
+              <a href="{{ url_for('company_register') }}"><i class="ri-add-circle-line"></i> Employer Register</a>
+
+              <div class="dropdown-divider"></div>
+
+              <span class="dropdown-heading"><i class="ri-shield-keyhole-line"></i> Platform Admin</span>
+              <a href="{{ url_for('admin_login') }}"><i class="ri-admin-line"></i> Admin Portal</a>
+            </div>
+          </li>
+          <li>
+            <a href="{{ url_for('jobs') }}" class="btn btn-sm btn-primary">
+              <i class="ri-search-line"></i> Find Jobs
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="nav-burger-btn" id="mobileBurgerBtn" aria-label="Open Navigation Menu">
+        <i class="ri-menu-3-line" style="font-size: 1.5rem;"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Drawer Overlay & Sidebar -->
+  <div class="mobile-drawer-overlay" id="mobileDrawerOverlay"></div>
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="mobile-drawer-header">
+      <a href="{{ url_for('index') }}" class="nav-logo">
+        <div class="logo-badge">
+          <i class="ri-briefcase-4-fill"></i>
+        </div>
+        <span>Local<span class="accent">Job</span>Portal</span>
+      </a>
+      <button class="btn-icon" id="mobileDrawerClose" aria-label="Close menu">
+        <i class="ri-close-line" style="font-size: 1.25rem;"></i>
+      </button>
+    </div>
+
+    <nav class="mobile-drawer-nav">
+      <a href="{{ url_for('index') }}"><i class="ri-home-5-line"></i> Home</a>
+      <a href="{{ url_for('jobs') }}"><i class="ri-search-line"></i> Browse Jobs</a>
+      <a href="{{ url_for('about') }}"><i class="ri-information-line"></i> About Us</a>
+      <a href="{{ url_for('contact') }}"><i class="ri-mail-line"></i> Contact Support</a>
+      <a href="{{ url_for('faq') }}"><i class="ri-questionnaire-line"></i> FAQ</a>
+
+      <div class="dropdown-divider" style="margin: 12px 0;"></div>
+
+      {% if session.get('user_type') == 'student' %}
+        <a href="{{ url_for('student_dashboard') }}"><i class="ri-dashboard-line"></i> Student Dashboard</a>
+        <a href="{{ url_for('student_applications') }}"><i class="ri-file-list-3-line"></i> My Applications</a>
+        <a href="{{ url_for('student_profile') }}"><i class="ri-user-3-line"></i> Profile & Resume</a>
+        <a href="{{ url_for('settings') }}"><i class="ri-settings-3-line"></i> Settings</a>
+        <a href="{{ url_for('student_logout') }}" style="color: var(--error);"><i class="ri-logout-box-r-line"></i> Logout</a>
+      {% elif session.get('user_type') == 'company' %}
+        <a href="{{ url_for('company_dashboard') }}"><i class="ri-dashboard-line"></i> Employer Dashboard</a>
+        <a href="{{ url_for('post_job') }}"><i class="ri-add-box-line"></i> Post New Job</a>
+        <a href="{{ url_for('company_profile') }}"><i class="ri-building-line"></i> Company Profile</a>
+        <a href="{{ url_for('settings') }}"><i class="ri-settings-3-line"></i> Settings</a>
+        <a href="{{ url_for('company_logout') }}" style="color: var(--error);"><i class="ri-logout-box-r-line"></i> Logout</a>
+      {% elif session.get('user_type') == 'admin' %}
+        <a href="{{ url_for('admin_dashboard') }}"><i class="ri-dashboard-line"></i> Admin Dashboard</a>
+        <a href="{{ url_for('manage_students') }}"><i class="ri-graduation-cap-line"></i> Manage Students</a>
+        <a href="{{ url_for('manage_companies') }}"><i class="ri-building-line"></i> Manage Companies</a>
+        <a href="{{ url_for('manage_jobs') }}"><i class="ri-briefcase-line"></i> Manage Jobs</a>
+        <a href="{{ url_for('admin_logout') }}" style="color: var(--error);"><i class="ri-logout-box-r-line"></i> Logout</a>
+      {% else %}
+        <a href="{{ url_for('student_login') }}"><i class="ri-graduation-cap-line"></i> Student Login</a>
+        <a href="{{ url_for('student_register') }}"><i class="ri-user-add-line"></i> Student Registration</a>
+        <a href="{{ url_for('company_login') }}"><i class="ri-building-line"></i> Employer Login</a>
+        <a href="{{ url_for('company_register') }}"><i class="ri-community-line"></i> Employer Registration</a>
+        <a href="{{ url_for('admin_login') }}"><i class="ri-shield-user-line"></i> Admin Login</a>
+      {% endif %}
+    </nav>
+  </div>
+
+  <!-- ===========================
+        FLASH / TOAST MESSAGES
+  ============================ -->
+  <div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">
+            <div class="flash-icon">
+              {% if category == 'success' %}
+                <i class="ri-checkbox-circle-fill" style="color: var(--success);"></i>
+              {% elif category == 'error' %}
+                <i class="ri-error-warning-fill" style="color: var(--error);"></i>
+              {% elif category == 'warning' %}
+                <i class="ri-alert-fill" style="color: var(--warning);"></i>
+              {% else %}
+                <i class="ri-information-fill" style="color: var(--info);"></i>
+              {% endif %}
+            </div>
+            <div class="flash-body">
+              {{ message }}
+            </div>
+            <button class="flash-close" aria-label="Close notification">&times;</button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- ===========================
+          MAIN CONTENT
+  ============================ -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ===========================
+          FOOTER
+  ============================ -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h3>
+          <span class="logo-badge"><i class="ri-briefcase-4-fill"></i></span>
+          Local Job Portal
+        </h3>
+        <p>
+          Empowering local students and regional businesses with a direct, verified hiring bridge. Find real opportunities, internships, and build thriving local careers.
+        </p>
+        <div style="display: flex; gap: 12px; margin-top: 16px;">
+          <span class="badge" style="background: rgba(255,255,255,0.1); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15);">
+            <i class="ri-shield-check-line" style="color: var(--success);"></i> 100% Verified Listings
+          </span>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Explore Opportunities</h4>
+        <a href="{{ url_for('jobs') }}"><i class="ri-arrow-right-s-line"></i> Browse All Jobs</a>
+        <a href="{{ url_for('jobs', job_type='Internship') }}"><i class="ri-arrow-right-s-line"></i> Internships</a>
+        <a href="{{ url_for('jobs', job_type='Full-Time') }}"><i class="ri-arrow-right-s-line"></i> Full-Time Roles</a>
+        <a href="{{ url_for('jobs', job_type='Part-Time') }}"><i class="ri-arrow-right-s-line"></i> Part-Time Jobs</a>
+        <a href="{{ url_for('faq') }}"><i class="ri-arrow-right-s-line"></i> FAQs & Help</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>User Portals</h4>
+        <a href="{{ url_for('student_register') }}"><i class="ri-arrow-right-s-line"></i> Student Registration</a>
+        <a href="{{ url_for('student_login') }}"><i class="ri-arrow-right-s-line"></i> Student Login</a>
+        <a href="{{ url_for('company_register') }}"><i class="ri-arrow-right-s-line"></i> Employer Register</a>
+        <a href="{{ url_for('company_login') }}"><i class="ri-arrow-right-s-line"></i> Employer Login</a>
+        <a href="{{ url_for('admin_login') }}"><i class="ri-arrow-right-s-line"></i> Admin Console</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Get in Touch</h4>
+        <p><i class="ri-map-pin-2-line" style="color: var(--primary-light);"></i> College Campus, Regional City, India</p>
+        <p><i class="ri-mail-line" style="color: var(--primary-light);"></i> support@localjobportal.com</p>
+        <p><i class="ri-phone-line" style="color: var(--primary-light);"></i> +91 82638 72088</p>
+        <p><i class="ri-time-line" style="color: var(--primary-light);"></i> Mon - Sat | 9:00 AM - 6:00 PM</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <span>© {{ current_year }} <strong>Local Job Portal</strong>. All rights reserved.</span>
+        <span>Built with <i class="ri-heart-3-fill" style="color: var(--error);"></i> for College Course End Project</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

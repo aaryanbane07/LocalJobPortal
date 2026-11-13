@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}Browse Jobs & Internships - Local Job Portal{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<section class="page-header">
+  <div class="container">
+    <h1>Explore Job Opportunities</h1>
+    <p>Discover internships, part-time jobs, and full-time career roles near you</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Search & Filter Card -->
+    <div class="filter-card">
+      <form method="GET" action="{{ url_for('jobs') }}">
+        <div class="filter-form-row">
+          
+          <!-- Search input -->
+          <div class="filter-input-wrap">
+            <i class="ri-search-2-line filter-icon"></i>
+            <input type="text" name="q" placeholder="Job title, skills (e.g. Python), or company..." value="{{ search }}">
+          </div>
+
+          <!-- Location select -->
+          <div class="filter-input-wrap">
+            <i class="ri-map-pin-2-line filter-icon"></i>
+            <select name="location">
+              <option value="">All Locations</option>
+              {% for loc in locations %}
+                <option value="{{ loc.location }}" {% if sel_location == loc.location %}selected{% endif %}>{{ loc.location }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Job Type select -->
+          <div class="filter-input-wrap">
+            <i class="ri-briefcase-line filter-icon"></i>
+            <select name="job_type">
+              <option value="">All Job Types</option>
+              {% for t in ['Internship','Full-Time','Part-Time','Contract'] %}
+                <option value="{{ t }}" {% if sel_type == t %}selected{% endif %}>{{ t }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" class="btn btn-primary">
+            <i class="ri-filter-3-line"></i> Filter Jobs
+          </button>
+
+          <!-- Clear button -->
+          {% if search or sel_location or sel_type %}
+            <a href="{{ url_for('jobs') }}" class="btn btn-outline" title="Clear all filters">
+              <i class="ri-refresh-line"></i> Reset
+            </a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+
+    <!-- Results Status Bar -->
+    <div class="section-header-row" style="margin-bottom: 24px;">
+      <div>
+        <p style="font-size: 1rem; font-weight: 700; color: var(--text-main);">
+          Showing <span style="color: var(--primary);">{{ jobs|length }}</span> available position{% if jobs|length != 1 %}s{% endif %}
+          {% if search %} for "<em>{{ search }}</em>"{% endif %}
+          {% if sel_location %} in <strong>{{ sel_location }}</strong>{% endif %}
+          {% if sel_type %} ({{ sel_type }}){% endif %}
+        </p>
+      </div>
+
+      {% if search or sel_location or sel_type %}
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <span style="font-size: 0.8125rem; color: var(--text-muted);">Active Filters:</span>
+          {% if search %}
+            <span class="badge" style="background: var(--bg-card-muted); color: var(--text-main);">Keyword: {{ search }}</span>
+          {% endif %}
+          {% if sel_location %}
+            <span class="badge" style="background: var(--bg-card-muted); color: var(--text-main);">City: {{ sel_location }}</span>
+          {% endif %}
+          {% if sel_type %}
+            <span class="badge" style="background: var(--bg-card-muted); color: var(--text-main);">Type: {{ sel_type }}</span>
+          {% endif %}
+          <a href="{{ url_for('jobs') }}" style="font-size: 0.8125rem; color: var(--primary); font-weight: 700; text-decoration: underline;">Clear All</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Jobs Grid -->
+    <div class="job-grid">
+      {% for job in jobs %}
+        <div class="job-card">
+          <div>
+            <div class="job-card-top">
+              <div class="job-card-header">
+                <div class="company-logo-avatar">
+                  {{ job.company_name[0]|upper }}
+                </div>
+                <div>
+                  <h3 class="job-card-title">{{ job.title }}</h3>
+                  <div class="job-company">
+                    <i class="ri-building-line" style="color: var(--text-subtle);"></i> {{ job.company_name }}
+                  </div>
+                </div>
+              </div>
+              <span class="badge badge-type">{{ job.job_type }}</span>
+            </div>
+
+            <div class="job-meta-list">
+              <div class="job-meta-item">
+                <i class="ri-map-pin-2-line meta-icon"></i>
+                <span>{{ job.location }}</span>
+              </div>
+              <div class="job-meta-item">
+                <i class="ri-money-dollar-circle-line meta-icon"></i>
+                <span class="job-salary-highlight">{{ job.salary }}</span>
+              </div>
+              <div class="job-meta-item">
+                <i class="ri-user-star-line meta-icon"></i>
+                <span>Experience: <strong>{{ job.experience }}</strong></span>
+              </div>
+              <div class="job-meta-item">
+                <i class="ri-calendar-event-line meta-icon"></i>
+                <span>Deadline: <strong>{{ job.last_date }}</strong></span>
+              </div>
+            </div>
+
+            {% if job.skills %}
+              <div class="job-skills-chips">
+                {% for skill in job.skills.split(',') %}
+                  <span class="skill-chip"><i class="ri-hashtag" style="font-size:0.8em;"></i> {{ skill.strip() }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="job-card-footer">
+            <span class="badge" style="background: var(--bg-card-muted); color: var(--text-muted);">
+              <i class="ri-shield-check-line" style="color: var(--success);"></i> Verified Role
+            </span>
+            <a href="{{ url_for('job_details', job_id=job.id) }}" class="btn btn-sm btn-gradient">
+              View & Apply <i class="ri-arrow-right-s-line"></i>
+            </a>
+          </div>
+        </div>
+      {% else %}
+        <div class="empty-state" style="grid-column: 1 / -1;">
+          <div class="empty-state-icon">
+            <i class="ri-search-eye-line"></i>
+          </div>
+          <h3>No matching jobs found</h3>
+          <p>We couldn't find any job postings matching your current search filters. Try broadening your keywords or clearing the location filter.</p>
+          <a href="{{ url_for('jobs') }}" class="btn btn-primary">
+            <i class="ri-refresh-line"></i> Reset Filters & View All
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

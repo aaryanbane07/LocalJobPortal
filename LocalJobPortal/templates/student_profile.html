@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}My Profile & Resume - Local Job Portal{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<section class="dashboard-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-profile">
+      {% if student.profile_photo %}
+        <img src="{{ url_for('static', filename='uploads/photos/' ~ student.profile_photo) }}" alt="{{ student.full_name }}" class="sidebar-avatar">
+      {% else %}
+        <div class="sidebar-avatar-placeholder">{{ student.full_name[0]|upper }}</div>
+      {% endif %}
+      <h4>{{ student.full_name }}</h4>
+      <span class="badge badge-role"><i class="ri-graduation-cap-line"></i> Student</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('student_dashboard') }}"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+      <a href="{{ url_for('jobs') }}"><i class="ri-search-line nav-icon"></i> Browse Jobs</a>
+      <a href="{{ url_for('student_applications') }}"><i class="ri-file-list-3-line nav-icon"></i> My Applications</a>
+      <a href="{{ url_for('student_profile') }}" class="active"><i class="ri-user-3-line nav-icon"></i> Edit Profile</a>
+      <a href="{{ url_for('settings') }}"><i class="ri-settings-3-line nav-icon"></i> Settings</a>
+      <a href="{{ url_for('student_logout') }}" class="logout-link"><i class="ri-logout-box-r-line nav-icon"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div>
+        <h1 class="dashboard-title">Profile & Resume Management</h1>
+        <p class="dashboard-subtitle">Keep your personal details, academic information, and resume updated</p>
+      </div>
+    </div>
+
+    <div class="profile-grid">
+
+      <!-- Left Card: Photo & Resume Uploader -->
+      <div class="profile-upload-card">
+        <h3 style="font-size:1.125rem; font-weight:700; margin-bottom:12px;"><i class="ri-image-edit-line" style="color:var(--primary);"></i> Profile Avatar</h3>
+        
+        {% if student.profile_photo %}
+          <img src="{{ url_for('static', filename='uploads/photos/' ~ student.profile_photo) }}" alt="Profile Photo" class="profile-photo-preview">
+        {% else %}
+          <div class="profile-photo-placeholder">{{ student.full_name[0]|upper }}</div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('upload_photo') }}" enctype="multipart/form-data" id="photoForm">
+          <div class="upload-input-group">
+            <input type="file" name="photo" id="photoInput" accept=".jpg,.jpeg,.png" required>
+            <button type="submit" class="btn btn-sm btn-outline full-width">
+              <i class="ri-upload-2-line"></i> Update Avatar
+            </button>
+          </div>
+        </form>
+
+        <div class="dropdown-divider" style="margin: 24px 0;"></div>
+
+        <!-- Resume Section -->
+        <h3 style="font-size:1.125rem; font-weight:700; margin-bottom:12px;"><i class="ri-file-pdf-line" style="color:var(--error);"></i> Master Resume (PDF)</h3>
+
+        {% if student.resume %}
+          <div class="resume-status-box">
+            <div class="resume-current-text">
+              <i class="ri-file-text-fill" style="color:var(--primary); font-size:1.25rem;"></i>
+              <span title="{{ student.resume }}">Current: {{ student.resume[:22] }}...</span>
+            </div>
+            <a href="{{ url_for('download_resume', student_id=student.id) }}" class="btn btn-sm btn-outline full-width">
+              <i class="ri-download-2-line"></i> Download Current Resume
+            </a>
+          </div>
+        {% else %}
+          <div class="resume-status-box" style="border-style:dashed; text-align:center;">
+            <p style="font-size:0.875rem; color:var(--error); font-weight:600; margin-bottom:4px;">
+              <i class="ri-error-warning-line"></i> No resume uploaded
+            </p>
+            <p style="font-size:0.75rem; color:var(--text-muted);">Required before applying to jobs</p>
+          </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('upload_resume') }}" enctype="multipart/form-data" id="resumeForm" style="margin-top: 14px;">
+          <div class="upload-input-group">
+            <input type="file" name="resume" id="resumeInput" accept=".pdf" required>
+            <span class="error-msg" id="resumeError" style="margin-bottom: 8px;"></span>
+            <button type="submit" class="btn btn-sm btn-gradient full-width">
+              <i class="ri-upload-cloud-line"></i> Upload New Resume (PDF)
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right Card: Form Details -->
+      <div class="glass-card">
+        <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+          <i class="ri-user-settings-line" style="color:var(--primary);"></i> Edit Personal & Academic Details
+        </h3>
+
+        <form method="POST" id="profileForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="full_name">Full Name *</label>
+              <input type="text" name="full_name" id="full_name" value="{{ student.full_name }}" required>
+              <span class="error-msg" id="full_nameError"></span>
+            </div>
+            <div class="form-group">
+              <label>Email Address (Account ID)</label>
+              <input type="email" value="{{ student.email }}" disabled style="background:var(--bg-main); color:var(--text-muted); cursor:not-allowed;">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Phone Number (10 digits) *</label>
+              <input type="tel" name="phone" id="phone" maxlength="10" value="{{ student.phone }}" required>
+              <span class="error-msg" id="phoneError"></span>
+            </div>
+            <div class="form-group">
+              <label for="college">College / University Name</label>
+              <input type="text" name="college" id="college" value="{{ student.college }}" placeholder="e.g. Government Engineering College">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="branch">Degree & Branch</label>
+              <input type="text" name="branch" id="branch" value="{{ student.branch }}" placeholder="e.g. Information Technology">
+            </div>
+            <div class="form-group">
+              <label for="year">Year of Study</label>
+              <select name="year" id="year">
+                {% for y in ['1st Year','2nd Year','3rd Year','4th Year','Graduate'] %}
+                  <option value="{{ y }}" {% if student.year == y %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="skills">Skills & Technologies (comma separated)</label>
+            <input type="text" name="skills" id="skills" value="{{ student.skills }}" placeholder="e.g. Python, SQL, React, Graphic Design, Problem Solving">
+          </div>
+
+          <button type="submit" class="btn btn-gradient btn-lg full-width" style="margin-top: 10px;">
+            <i class="ri-save-line"></i> Save Profile Changes
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+document.getElementById('profileForm').addEventListener('submit', function(e){
+  if(!validateProfileForm()) e.preventDefault();
+});
+document.getElementById('resumeForm').addEventListener('submit', function(e){
+  if(!validateResumeFile()) e.preventDefault();
+});
+</script>
+{% endblock %}

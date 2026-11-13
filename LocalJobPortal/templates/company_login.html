@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Employer Login - Local Job Portal{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-icon-badge" style="background: var(--accent-light); color: var(--accent);">
+        <i class="ri-building-4-fill"></i>
+      </div>
+      <h1 class="auth-title">Employer Login</h1>
+      <p class="auth-subtitle">Sign in to manage job listings and review applicants</p>
+    </div>
+
+    <form method="POST" id="companyLoginForm" novalidate>
+      <div class="form-group">
+        <label for="email">Company Email Address *</label>
+        <input type="email" name="email" id="email" placeholder="hr@company.com" required autocomplete="email">
+        <span class="error-msg" id="emailError"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password *</label>
+        <input type="password" name="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+        <span class="error-msg" id="passwordError"></span>
+      </div>
+
+      <div class="form-links">
+        <a href="{{ url_for('student_forgot_password') }}"><i class="ri-key-line"></i> Forgot Password?</a>
+      </div>
+
+      <button type="submit" class="btn btn-gradient btn-lg full-width">
+        <i class="ri-login-box-line"></i> Sign In to Employer Portal
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>New employer? <a href="{{ url_for('company_register') }}">Register your Company</a></p>
+      <p style="margin-top: 10px; font-size: 0.8125rem;">
+        Are you a student? <a href="{{ url_for('student_login') }}">Login as Student</a>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+document.getElementById('companyLoginForm').addEventListener('submit', function(e){
+  if(!validateLoginForm()) e.preventDefault();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Post New Job - Local Job Portal{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<section class="dashboard-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <nav class="sidebar-nav sidebar-nav-top">
+      <a href="{{ url_for('company_dashboard') }}"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+      <a href="{{ url_for('post_job') }}" class="active"><i class="ri-add-box-line nav-icon"></i> Post New Job</a>
+      <a href="{{ url_for('company_profile') }}"><i class="ri-building-line nav-icon"></i> Company Profile</a>
+      <a href="{{ url_for('settings') }}"><i class="ri-settings-3-line nav-icon"></i> Settings</a>
+      <a href="{{ url_for('company_logout') }}" class="logout-link"><i class="ri-logout-box-r-line nav-icon"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div>
+        <h1 class="dashboard-title">Create Job Posting</h1>
+        <p class="dashboard-subtitle">Fill in the details to publish a new internship or job opportunity</p>
+      </div>
+      <a href="{{ url_for('company_dashboard') }}" class="btn btn-sm btn-outline">
+        <i class="ri-arrow-left-line"></i> Back to Dashboard
+      </a>
+    </div>
+
+    <div class="glass-card form-card-wide">
+      <form method="POST" id="jobForm" novalidate>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title">Job Title / Role Name *</label>
+            <input type="text" name="title" id="title" placeholder="e.g. Frontend Web Developer Intern" required>
+            <span class="error-msg" id="titleError"></span>
+          </div>
+          <div class="form-group">
+            <label for="location">Job Location (City / Remote) *</label>
+            <input type="text" name="location" id="location" placeholder="e.g. Mumbai / Remote" required>
+            <span class="error-msg" id="locationError"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="salary">Offered Compensation / Stipend</label>
+            <input type="text" name="salary" id="salary" placeholder="e.g. ₹15,000 - ₹25,000 / month">
+          </div>
+          <div class="form-group">
+            <label for="job_type">Employment Type *</label>
+            <select name="job_type" id="job_type">
+              <option value="Internship">Internship</option>
+              <option value="Full-Time">Full-Time</option>
+              <option value="Part-Time">Part-Time</option>
+              <option value="Contract">Contract</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="experience">Experience Level</label>
+            <input type="text" name="experience" id="experience" placeholder="e.g. Fresher / 0-1 Years">
+          </div>
+          <div class="form-group">
+            <label for="last_date">Application Deadline *</label>
+            <input type="date" name="last_date" id="last_date" required>
+            <span class="error-msg" id="last_dateError"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="skills">Required Skills (comma separated)</label>
+          <input type="text" name="skills" id="skills" placeholder="e.g. React, JavaScript, HTML, CSS, Git">
+        </div>
+
+        <div class="form-group">
+          <label for="description">Detailed Job Description & Responsibilities</label>
+          <textarea name="description" id="description" rows="6" placeholder="Outline day-to-day responsibilities, learning outcomes, eligibility criteria, and work timings..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-gradient btn-lg full-width" style="margin-top: 10px;">
+          <i class="ri-check-line"></i> Publish Job Listing
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+document.getElementById('jobForm').addEventListener('submit', function(e){
+  if(!validateJobForm()) e.preventDefault();
+});
+</script>
+{% endblock %}

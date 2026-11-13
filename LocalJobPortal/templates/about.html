@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}About Us - Local Job Portal{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<section class="page-header">
+  <div class="container">
+    <span class="section-tag"><i class="ri-heart-pulse-line"></i> Our Mission & Vision</span>
+    <h1>Connecting Local Talent With Real Opportunity</h1>
+    <p>Bridging the gap between regional employers and ambitious college students</p>
+  </div>
+</section>
+
+<!-- Mission & Story -->
+<section class="section">
+  <div class="container">
+    <div class="glass-card" style="margin-bottom: 40px; padding: 40px;">
+      <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 16px;">
+          Built to Solve the <span class="accent">Local Placement Gap</span>
+        </h2>
+        <p style="font-size: 1.125rem; color: var(--text-secondary); line-height: 1.8;">
+          Local Job Portal was conceived as a high-impact College Course End Project (CEP) with a clear mission: enable students to discover genuine, verified internships and jobs near their campus without getting lost in massive, impersonal global job boards.
+        </p>
+      </div>
+    </div>
+
+    <!-- 3 Core Stakeholder Cards -->
+    <div class="steps-grid" style="margin-bottom: 48px;">
+      <div class="step-card">
+        <div class="step-icon-box">
+          <i class="ri-graduation-cap-fill"></i>
+        </div>
+        <h3>For Students & Freshers</h3>
+        <p>Build your professional profile, attach your master resume, explore local hiring opportunities, and apply with zero hidden fees.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-icon-box" style="background: var(--accent-light); color: var(--accent);">
+          <i class="ri-building-4-fill"></i>
+        </div>
+        <h3>For Regional Employers</h3>
+        <p>Publish job openings in minutes, screen student profiles, download formatted resumes, and manage candidates seamlessly.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-icon-box" style="background: var(--success-light); color: var(--success);">
+          <i class="ri-shield-check-fill"></i>
+        </div>
+        <h3>For Platform Trust</h3>
+        <p>Comprehensive administrator moderation ensures that spam companies and inactive postings are filtered out continuously.</p>
+      </div>
+    </div>
+
+    <!-- Core Pillars Grid -->
+    <div class="glass-card" style="padding: 40px;">
+      <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 24px; text-align: center;">
+        Why Local Job Portal Stands Out
+      </h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+            <i class="ri-speed-up-line"></i>
+          </div>
+          <div>
+            <h4 style="font-size: 1.0625rem; font-weight: 700; margin-bottom: 4px;">Ultra Fast & Lightweight</h4>
+            <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.6;">Engineered with clean HTML5/CSS3 and Python Flask for lightning-fast page loads and zero bloat.</p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--success-light); color: var(--success); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+            <i class="ri-lock-2-line"></i>
+          </div>
+          <div>
+            <h4 style="font-size: 1.0625rem; font-weight: 700; margin-bottom: 4px;">Secure Credential Storage</h4>
+            <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.6;">Passwords are hashed with industry-standard cryptographic PBKDF2:SHA256 algorithms.</p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+            <i class="ri-smartphone-line"></i>
+          </div>
+          <div>
+            <h4 style="font-size: 1.0625rem; font-weight: 700; margin-bottom: 4px;">Mobile-First Responsiveness</h4>
+            <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.6;">Seamless browsing across smartphones, tablets, laptops, and desktop displays.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Bottom CTA -->
+<section class="section-tight" style="margin-bottom: 60px;">
+  <div class="container">
+    <div class="cta-card">
+      <h2>Explore Available Positions Today</h2>
+      <p>Take the first step toward launching your career with trusted local employers.</p>
+      <div class="cta-buttons">
+        <a href="{{ url_for('jobs') }}" class="btn btn-lg" style="background:#fff; color:var(--primary); font-weight:700;">
+          <i class="ri-search-line"></i> Browse All Jobs
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

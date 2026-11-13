@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - Local Job Portal{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<section class="dashboard-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-profile">
+      <div class="sidebar-avatar-placeholder" style="background: linear-gradient(135deg, #334155, #0f172a);"><i class="ri-shield-user-fill"></i></div>
+      <h4>Administrator</h4>
+      <span class="badge" style="background:#0f172a; color:#fff;"><i class="ri-shield-star-line"></i> Master Admin</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin_dashboard') }}" class="active"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+      <a href="{{ url_for('manage_students') }}"><i class="ri-graduation-cap-line nav-icon"></i> Manage Students</a>
+      <a href="{{ url_for('manage_companies') }}"><i class="ri-building-line nav-icon"></i> Manage Companies</a>
+      <a href="{{ url_for('manage_jobs') }}"><i class="ri-briefcase-line nav-icon"></i> Manage Jobs</a>
+      <a href="{{ url_for('admin_logout') }}" class="logout-link"><i class="ri-logout-box-r-line nav-icon"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div>
+        <h1 class="dashboard-title">System Control Center</h1>
+        <p class="dashboard-subtitle">Monitor platform metrics, user registrations, and listings moderation</p>
+      </div>
+    </div>
+
+    <!-- Stat Metrics Grid -->
+    <div class="dcard-grid dcard-grid-wide">
+      <div class="dcard">
+        <div class="dcard-icon icon-blue">
+          <i class="ri-graduation-cap-fill"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ stats.students }}</h2>
+          <p>Total Students</p>
+        </div>
+      </div>
+
+      <div class="dcard">
+        <div class="dcard-icon icon-purple">
+          <i class="ri-building-fill"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ stats.companies }}</h2>
+          <p>Total Companies</p>
+        </div>
+      </div>
+
+      <div class="dcard">
+        <div class="dcard-icon icon-amber">
+          <i class="ri-briefcase-3-fill"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ stats.jobs }}</h2>
+          <p>Total Jobs</p>
+        </div>
+      </div>
+
+      <div class="dcard">
+        <div class="dcard-icon icon-green">
+          <i class="ri-checkbox-circle-fill"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ stats.open_jobs }}</h2>
+          <p>Open Jobs</p>
+        </div>
+      </div>
+
+      <div class="dcard">
+        <div class="dcard-icon" style="background:#e0f2fe; color:#0284c7;">
+          <i class="ri-send-plane-fill"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ stats.applications }}</h2>
+          <p>Applications</p>
+        </div>
+      </div>
+
+      <div class="dcard">
+        <div class="dcard-icon icon-red">
+          <i class="ri-forbid-2-line"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ stats.blocked_students + stats.blocked_companies }}</h2>
+          <p>Blocked Users</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2-Column Recent Registrations Grid -->
+    <div class="two-col-grid">
+      
+      <!-- Recent Students -->
+      <div class="glass-card">
+        <div class="section-header-row" style="margin-bottom:14px;">
+          <h3 style="font-size:1.125rem; font-weight:700;"><i class="ri-user-follow-line" style="color:var(--primary);"></i> Recent Students</h3>
+          <a href="{{ url_for('manage_students') }}" style="font-size:0.8125rem; font-weight:700; color:var(--primary);">Manage All →</a>
+        </div>
+        <div class="table-wrapper" style="box-shadow:none; border:none; margin:0;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in recent_students %}
+                <tr>
+                  <td><strong>{{ s.full_name }}</strong></td>
+                  <td><span style="font-size:0.8125rem; color:var(--text-muted);">{{ s.email }}</span></td>
+                  <td>
+                    <span class="status-pill status-{{ s.status }}">{{ s.status }}</span>
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="3" class="empty-msg">No students registered yet.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Recent Companies -->
+      <div class="glass-card">
+        <div class="section-header-row" style="margin-bottom:14px;">
+          <h3 style="font-size:1.125rem; font-weight:700;"><i class="ri-community-line" style="color:var(--accent);"></i> Recent Companies</h3>
+          <a href="{{ url_for('manage_companies') }}" style="font-size:0.8125rem; font-weight:700; color:var(--accent);">Manage All →</a>
+        </div>
+        <div class="table-wrapper" style="box-shadow:none; border:none; margin:0;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Company Name</th>
+                <th>Email</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in recent_companies %}
+                <tr>
+                  <td><strong>{{ c.company_name }}</strong></td>
+                  <td><span style="font-size:0.8125rem; color:var(--text-muted);">{{ c.email }}</span></td>
+                  <td>
+                    <span class="status-pill status-{{ c.status }}">{{ c.status }}</span>
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="3" class="empty-msg">No companies registered yet.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+{% endblock %}

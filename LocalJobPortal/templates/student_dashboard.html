@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard - Local Job Portal{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<section class="dashboard-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-profile">
+      {% if student.profile_photo %}
+        <img src="{{ url_for('static', filename='uploads/photos/' ~ student.profile_photo) }}" alt="{{ student.full_name }}" class="sidebar-avatar">
+      {% else %}
+        <div class="sidebar-avatar-placeholder">{{ student.full_name[0]|upper }}</div>
+      {% endif %}
+      <h4>{{ student.full_name }}</h4>
+      <span class="badge badge-role"><i class="ri-graduation-cap-line"></i> Student</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('student_dashboard') }}" class="active"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+      <a href="{{ url_for('jobs') }}"><i class="ri-search-line nav-icon"></i> Browse Jobs</a>
+      <a href="{{ url_for('student_applications') }}"><i class="ri-file-list-3-line nav-icon"></i> My Applications</a>
+      <a href="{{ url_for('student_profile') }}"><i class="ri-user-3-line nav-icon"></i> Edit Profile</a>
+      <a href="{{ url_for('settings') }}"><i class="ri-settings-3-line nav-icon"></i> Settings</a>
+      <a href="{{ url_for('student_logout') }}" class="logout-link"><i class="ri-logout-box-r-line nav-icon"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div>
+        <h1 class="dashboard-title">Welcome back, {{ student.full_name.split(' ')[0] }} 👋</h1>
+        <p class="dashboard-subtitle">Here is your job application overview and recent recommendations.</p>
+      </div>
+      <a href="{{ url_for('jobs') }}" class="btn btn-sm btn-primary">
+        <i class="ri-search-line"></i> Find New Jobs
+      </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="dcard-grid">
+      <div class="dcard">
+        <div class="dcard-icon icon-blue">
+          <i class="ri-send-plane-line"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ total_applied }}</h2>
+          <p>Total Applied</p>
+        </div>
+      </div>
+
+      <div class="dcard">
+        <div class="dcard-icon icon-amber">
+          <i class="ri-star-line"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ shortlisted }}</h2>
+          <p>Shortlisted</p>
+        </div>
+      </div>
+
+      <div class="dcard">
+        <div class="dcard-icon icon-green">
+          <i class="ri-checkbox-circle-line"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ selected }}</h2>
+          <p>Selected / Offers</p>
+        </div>
+      </div>
+
+      <div class="dcard">
+        <div class="dcard-icon icon-purple">
+          <i class="ri-briefcase-4-line"></i>
+        </div>
+        <div class="dcard-info">
+          <h2>{{ open_jobs }}</h2>
+          <p>Live Job Openings</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Missing Resume Alert -->
+    {% if not student.resume %}
+      <div class="alert-card">
+        <i class="ri-error-warning-fill" style="font-size: 1.5rem; flex-shrink: 0; color: var(--warning);"></i>
+        <div>
+          <strong>Resume Missing:</strong> You haven't uploaded a PDF resume yet.
+          <a href="{{ url_for('student_profile') }}">Upload your resume now</a> so employers can review your profile and select you!
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Recent Openings -->
+    <div class="section-header-row" style="margin-top: 10px; margin-bottom: 20px;">
+      <div>
+        <h2 class="section-title-left"><i class="ri-fire-line" style="color:var(--primary);"></i> Recommended & Recent Openings</h2>
+      </div>
+      <a href="{{ url_for('jobs') }}" style="font-size: 0.875rem; font-weight: 700; color: var(--primary);">
+        View all {{ open_jobs }} jobs →
+      </a>
+    </div>
+
+    <div class="job-grid">
+      {% for job in recent_jobs %}
+        <div class="job-card">
+          <div>
+            <div class="job-card-top">
+              <div class="job-card-header">
+                <div class="company-logo-avatar">
+                  {{ job.company_name[0]|upper }}
+                </div>
+                <div>
+                  <h3 class="job-card-title">{{ job.title }}</h3>
+                  <div class="job-company">
+                    <i class="ri-building-line" style="color: var(--text-subtle);"></i> {{ job.company_name }}
+                  </div>
+                </div>
+              </div>
+              <span class="badge badge-type">{{ job.job_type }}</span>
+            </div>
+
+            <div class="job-meta-list">
+              <div class="job-meta-item">
+                <i class="ri-map-pin-2-line meta-icon"></i>
+                <span>{{ job.location }}</span>
+              </div>
+              <div class="job-meta-item">
+                <i class="ri-money-dollar-circle-line meta-icon"></i>
+                <span class="job-salary-highlight">{{ job.salary }}</span>
+              </div>
+              <div class="job-meta-item">
+                <i class="ri-calendar-event-line meta-icon"></i>
+                <span>Deadline: <strong>{{ job.last_date }}</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-card-footer">
+            <span class="badge" style="background: var(--bg-card-muted); color: var(--text-muted);">
+              <i class="ri-time-line"></i> Open
+            </span>
+            <a href="{{ url_for('job_details', job_id=job.id) }}" class="btn btn-sm btn-gradient">
+              View & Apply <i class="ri-arrow-right-s-line"></i>
+            </a>
+          </div>
+        </div>
+      {% else %}
+        <div class="empty-state" style="grid-column: 1 / -1;">
+          <div class="empty-state-icon">
+            <i class="ri-briefcase-line"></i>
+          </div>
+          <h3>No jobs open right now</h3>
+          <p>Check back soon for new internship and job opportunities from local employers.</p>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}My Job Applications - Local Job Portal{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<section class="dashboard-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <nav class="sidebar-nav sidebar-nav-top">
+      <a href="{{ url_for('student_dashboard') }}"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+      <a href="{{ url_for('jobs') }}"><i class="ri-search-line nav-icon"></i> Browse Jobs</a>
+      <a href="{{ url_for('student_applications') }}" class="active"><i class="ri-file-list-3-line nav-icon"></i> My Applications</a>
+      <a href="{{ url_for('student_profile') }}"><i class="ri-user-3-line nav-icon"></i> Edit Profile</a>
+      <a href="{{ url_for('settings') }}"><i class="ri-settings-3-line nav-icon"></i> Settings</a>
+      <a href="{{ url_for('student_logout') }}" class="logout-link"><i class="ri-logout-box-r-line nav-icon"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div>
+        <h1 class="dashboard-title">Submitted Applications</h1>
+        <p class="dashboard-subtitle">Track the status of all your internship and job applications</p>
+      </div>
+      <a href="{{ url_for('jobs') }}" class="btn btn-sm btn-primary">
+        <i class="ri-search-line"></i> Browse More Jobs
+      </a>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Role & Job Title</th>
+            <th>Company</th>
+            <th>Location</th>
+            <th>Type</th>
+            <th>Applied Date</th>
+            <th>Deadline</th>
+            <th>Current Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in applications %}
+            <tr>
+              <td>
+                <strong style="color:var(--text-main); font-weight:700;">{{ a.title }}</strong>
+              </td>
+              <td>
+                <span style="color:var(--text-secondary);"><i class="ri-building-line" style="color:var(--text-subtle);"></i> {{ a.company_name }}</span>
+              </td>
+              <td>
+                <span style="font-size:0.875rem; color:var(--text-muted);"><i class="ri-map-pin-line"></i> {{ a.location }}</span>
+              </td>
+              <td>
+                <span class="badge badge-type">{{ a.job_type }}</span>
+              </td>
+              <td>
+                <span style="font-size:0.875rem; color:var(--text-secondary);">{{ a.applied_at.strftime('%d %b %Y') }}</span>
+              </td>
+              <td>
+                <span style="font-size:0.875rem; color:var(--text-muted);">{{ a.last_date }}</span>
+              </td>
+              <td>
+                <span class="status-pill status-{{ a.status|lower }}">
+                  {{ a.status }}
+                </span>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="7">
+                <div class="empty-state" style="margin: 20px auto;">
+                  <div class="empty-state-icon">
+                    <i class="ri-file-search-line"></i>
+                  </div>
+                  <h3>No applications submitted yet</h3>
+                  <p>You haven't applied to any job openings yet. Start exploring live listings now!</p>
+                  <a href="{{ url_for('jobs') }}" class="btn btn-primary">
+                    <i class="ri-search-line"></i> Search & Apply for Jobs
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</section>
+{% endblock %}

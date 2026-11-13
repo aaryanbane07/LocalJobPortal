@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }} at {{ job.company_name }} - Local Job Portal{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+
+<!-- Breadcrumb bar -->
+<div style="background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 14px 0;">
+  <div class="container" style="display:flex; align-items:center; gap:8px; font-size:0.875rem; color:var(--text-muted);">
+    <a href="{{ url_for('index') }}" style="color:var(--text-secondary);"><i class="ri-home-line"></i> Home</a>
+    <span>/</span>
+    <a href="{{ url_for('jobs') }}" style="color:var(--text-secondary);">Jobs</a>
+    <span>/</span>
+    <span style="color:var(--primary); font-weight:600;">{{ job.title }}</span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="job-details-container">
+
+      <!-- Left Main Details Column -->
+      <div class="job-details-main">
+        <div class="job-details-header">
+          {% if job.logo %}
+            <img src="{{ url_for('static', filename='uploads/logos/' ~ job.logo) }}" alt="{{ job.company_name }}" class="job-details-logo">
+          {% else %}
+            <div class="job-details-logo-placeholder">{{ job.company_name[0]|upper }}</div>
+          {% endif %}
+          <div style="flex:1;">
+            <h1>{{ job.title }}</h1>
+            <p class="job-company" style="font-size:1.0625rem; margin-top:4px;">
+              <i class="ri-building-line" style="color:var(--primary);"></i> {{ job.company_name }}
+              {% if job.website %}
+                &nbsp;•&nbsp; <a href="{{ job.website }}" target="_blank" rel="noopener noreferrer" style="color:var(--primary); font-weight:600; font-size:0.875rem;"><i class="ri-external-link-line"></i> Website</a>
+              {% endif %}
+            </p>
+          </div>
+          <span class="badge badge-type badge-large">{{ job.job_type }}</span>
+        </div>
+
+        <!-- Meta Summary Grid -->
+        <div class="job-details-meta-grid">
+          <div class="summary-meta-item">
+            <div class="meta-icon"><i class="ri-map-pin-2-line"></i></div>
+            <div>
+              <strong>Location</strong>
+              <p>{{ job.location }}</p>
+            </div>
+          </div>
+          <div class="summary-meta-item">
+            <div class="meta-icon" style="background:var(--success-light); color:var(--success);"><i class="ri-money-dollar-circle-line"></i></div>
+            <div>
+              <strong>Offered Salary</strong>
+              <p>{{ job.salary }}</p>
+            </div>
+          </div>
+          <div class="summary-meta-item">
+            <div class="meta-icon" style="background:var(--accent-light); color:var(--accent);"><i class="ri-user-star-line"></i></div>
+            <div>
+              <strong>Experience Level</strong>
+              <p>{{ job.experience }}</p>
+            </div>
+          </div>
+          <div class="summary-meta-item">
+            <div class="meta-icon" style="background:var(--warning-light); color:var(--warning);"><i class="ri-calendar-event-line"></i></div>
+            <div>
+              <strong>Deadline to Apply</strong>
+              <p>{{ job.last_date }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skills Section -->
+        {% if job.skills %}
+          <div class="job-details-section">
+            <h3><i class="ri-tools-line" style="color:var(--primary);"></i> Key Skills & Competencies</h3>
+            <div class="skills-tags">
+              {% for skill in job.skills.split(',') %}
+                <span class="skill-tag"><i class="ri-checkbox-circle-line"></i> {{ skill.strip() }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Job Description Section -->
+        <div class="job-details-section">
+          <h3><i class="ri-file-text-line" style="color:var(--primary);"></i> Job Description & Responsibilities</h3>
+          <p>{{ job.description or "No detailed description provided by employer." }}</p>
+        </div>
+
+        <!-- About Employer Section -->
+        <div class="job-details-section" style="margin-bottom:0; padding-top:20px; border-top:1px solid var(--border);">
+          <h3><i class="ri-community-line" style="color:var(--primary);"></i> About {{ job.company_name }}</h3>
+          <p>{{ job.company_description or "A verified regional hiring partner offering internships and jobs for college talent." }}</p>
+          {% if job.address %}
+            <p style="margin-top:12px; font-size:0.875rem; color:var(--text-muted);">
+              <i class="ri-map-pin-line"></i> <strong>Headquarters:</strong> {{ job.address }}
+            </p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Right Sticky Application Action Sidebar -->
+      <aside class="job-details-sidebar">
+        <div class="job-summary-card">
+          <h3>Apply For This Role</h3>
+
+          <div style="margin-bottom: 20px;">
+            <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.6;">
+              Applications are submitted directly to <strong>{{ job.company_name }}</strong>'s recruiting team.
+            </p>
+          </div>
+
+          <div class="job-details-actions">
+            {% if session.get('user_type') == 'student' %}
+              {% if already_applied %}
+                <button class="btn btn-outline full-width" disabled style="background:var(--success-light); color:var(--success-dark); border-color:var(--success-border); font-weight:700;">
+                  <i class="ri-checkbox-circle-fill" style="color:var(--success);"></i> Application Submitted
+                </button>
+                <p style="font-size:0.8125rem; color:var(--text-muted); text-align:center; margin-top:10px;">
+                  Track progress in <a href="{{ url_for('student_applications') }}" style="color:var(--primary); font-weight:600; text-decoration:underline;">My Applications</a>
+                </p>
+              {% else %}
+                <form method="POST" action="{{ url_for('apply_job', job_id=job.id) }}">
+                  <button type="submit" class="btn btn-gradient btn-lg full-width">
+                    <i class="ri-send-plane-fill"></i> Submit Application Now
+                  </button>
+                </form>
+                <p style="font-size:0.75rem; color:var(--text-subtle); text-align:center; margin-top:8px;">
+                  Your uploaded profile resume will be attached.
+                </p>
+              {% endif %}
+            {% elif session.get('user_type') == 'company' %}
+              <div class="alert-card" style="margin-bottom:0; font-size:0.8125rem;">
+                <i class="ri-information-line"></i> You are signed in as an Employer. Student accounts can apply for jobs.
+              </div>
+            {% elif session.get('user_type') == 'admin' %}
+              <div class="alert-card" style="margin-bottom:0; font-size:0.8125rem;">
+                <i class="ri-shield-line"></i> Viewing as Administrator.
+              </div>
+            {% else %}
+              <a href="{{ url_for('student_login') }}" class="btn btn-gradient full-width" style="margin-bottom:10px;">
+                <i class="ri-login-box-line"></i> Sign In to Apply
+              </a>
+              <a href="{{ url_for('student_register') }}" class="btn btn-outline full-width">
+                <i class="ri-user-add-line"></i> Create Free Student Account
+              </a>
+            {% endif %}
+          </div>
+
+          <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.8125rem; color: var(--text-muted);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+              <i class="ri-shield-check-line" style="color:var(--success);"></i>
+              <span>100% Free student applications</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <i class="ri-lock-line" style="color:var(--primary);"></i>
+              <span>Direct hiring without third-party fees</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Back link -->
+        <a href="{{ url_for('jobs') }}" class="btn btn-ghost full-width" style="border: 1px solid var(--border);">
+          <i class="ri-arrow-left-line"></i> Back to Job Listings
+        </a>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

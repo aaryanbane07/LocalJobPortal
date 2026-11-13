@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Edit Job: {{ job.title }} - Local Job Portal{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<section class="dashboard-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <nav class="sidebar-nav sidebar-nav-top">
+      <a href="{{ url_for('company_dashboard') }}"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+      <a href="{{ url_for('post_job') }}"><i class="ri-add-box-line nav-icon"></i> Post New Job</a>
+      <a href="{{ url_for('company_profile') }}"><i class="ri-building-line nav-icon"></i> Company Profile</a>
+      <a href="{{ url_for('settings') }}"><i class="ri-settings-3-line nav-icon"></i> Settings</a>
+      <a href="{{ url_for('company_logout') }}" class="logout-link"><i class="ri-logout-box-r-line nav-icon"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="dashboard-main">
+    <div class="dashboard-header">
+      <div>
+        <h1 class="dashboard-title">Edit Job Posting</h1>
+        <p class="dashboard-subtitle">Update role parameters, deadline, or toggle listing status</p>
+      </div>
+      <a href="{{ url_for('company_dashboard') }}" class="btn btn-sm btn-outline">
+        <i class="ri-arrow-left-line"></i> Back to Dashboard
+      </a>
+    </div>
+
+    <div class="glass-card form-card-wide">
+      <form method="POST" id="jobEditForm" novalidate>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title">Job Title / Role Name *</label>
+            <input type="text" name="title" id="title" value="{{ job.title }}" required>
+            <span class="error-msg" id="titleError"></span>
+          </div>
+          <div class="form-group">
+            <label for="location">Job Location (City / Remote) *</label>
+            <input type="text" name="location" id="location" value="{{ job.location }}" required>
+            <span class="error-msg" id="locationError"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="salary">Offered Compensation / Stipend</label>
+            <input type="text" name="salary" id="salary" value="{{ job.salary }}">
+          </div>
+          <div class="form-group">
+            <label for="job_type">Employment Type *</label>
+            <select name="job_type" id="job_type">
+              {% for t in ['Internship','Full-Time','Part-Time','Contract'] %}
+                <option value="{{ t }}" {% if job.job_type == t %}selected{% endif %}>{{ t }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="experience">Experience Level</label>
+            <input type="text" name="experience" id="experience" value="{{ job.experience }}">
+          </div>
+          <div class="form-group">
+            <label for="last_date">Application Deadline *</label>
+            <input type="date" name="last_date" id="last_date" value="{{ job.last_date }}" required>
+            <span class="error-msg" id="last_dateError"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="skills">Required Skills (comma separated)</label>
+          <input type="text" name="skills" id="skills" value="{{ job.skills }}">
+        </div>
+
+        <div class="form-group">
+          <label for="description">Detailed Job Description</label>
+          <textarea name="description" id="description" rows="6">{{ job.description }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="status">Listing Status</label>
+          <select name="status" id="status">
+            <option value="open" {% if job.status == 'open' %}selected{% endif %}>Open (Accepting Applications)</option>
+            <option value="closed" {% if job.status == 'closed' %}selected{% endif %}>Closed (Applications Paused)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-gradient btn-lg full-width" style="margin-top: 10px;">
+          <i class="ri-save-line"></i> Save & Update Job
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+document.getElementById('jobEditForm').addEventListener('submit', function(e){
+  if(!validateJobForm()) e.preventDefault();
+});
+</script>
+{% endblock %}

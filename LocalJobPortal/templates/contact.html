@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Contact Us - Local Job Portal{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<section class="page-header">
+  <div class="container">
+    <span class="section-tag"><i class="ri-customer-service-2-line"></i> Support & Inquiries</span>
+    <h1>Get in Touch with Our Team</h1>
+    <p>Have questions about posting jobs, applying, or account support? We're here to help.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 32px; align-items: start; max-width: 1040px; margin: 0 auto;">
+
+      <!-- Left Contact Info Card -->
+      <div class="glass-card" style="padding: 32px;">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; color: var(--text-main);">
+          <i class="ri-chat-smile-3-line" style="color: var(--primary);"></i> Contact Information
+        </h3>
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="width: 42px; height: 42px; border-radius: var(--radius-sm); background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+              <i class="ri-map-pin-2-line"></i>
+            </div>
+            <div>
+              <strong style="display:block; font-size: 0.8125rem; text-transform: uppercase; color: var(--text-muted);">Campus Office</strong>
+              <p style="font-size: 0.9375rem; color: var(--text-secondary);">College Campus, Regional District, India</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="width: 42px; height: 42px; border-radius: var(--radius-sm); background: var(--success-light); color: var(--success); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+              <i class="ri-mail-line"></i>
+            </div>
+            <div>
+              <strong style="display:block; font-size: 0.8125rem; text-transform: uppercase; color: var(--text-muted);">Email Support</strong>
+              <a href="mailto:support@localjobportal.com" style="font-size: 0.9375rem; color: var(--primary); font-weight: 600;">support@localjobportal.com</a>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="width: 42px; height: 42px; border-radius: var(--radius-sm); background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+              <i class="ri-phone-line"></i>
+            </div>
+            <div>
+              <strong style="display:block; font-size: 0.8125rem; text-transform: uppercase; color: var(--text-muted);">Helpline Phone</strong>
+              <p style="font-size: 0.9375rem; color: var(--text-secondary); font-weight: 600;">+91 82638 72088</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="width: 42px; height: 42px; border-radius: var(--radius-sm); background: var(--warning-light); color: var(--warning); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+              <i class="ri-time-line"></i>
+            </div>
+            <div>
+              <strong style="display:block; font-size: 0.8125rem; text-transform: uppercase; color: var(--text-muted);">Helpdesk Hours</strong>
+              <p style="font-size: 0.9375rem; color: var(--text-secondary);">Mon - Sat: 9:00 AM - 6:00 PM</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border);">
+          <p style="font-size: 0.875rem; color: var(--text-muted);">
+            Need quick answers? Check out our <a href="{{ url_for('faq') }}" style="color: var(--primary); font-weight: 700; text-decoration: underline;">Frequently Asked Questions</a>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Message Form -->
+      <div class="glass-card" style="padding: 36px;">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; color: var(--text-main);">
+          <i class="ri-send-plane-line" style="color: var(--primary);"></i> Send Us a Direct Message
+        </h3>
+        <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 24px;">
+          Our administration desk typically replies within 24 business hours.
+        </p>
+
+        <form method="POST" id="contactForm" novalidate>
+          <div class="form-group">
+            <label for="name">Your Full Name *</label>
+            <input type="text" name="name" id="name" placeholder="e.g. Rahul Sharma" required>
+            <span class="error-msg" id="nameError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Your Email Address *</label>
+            <input type="email" name="email" id="email" placeholder="e.g. rahul@example.com" required>
+            <span class="error-msg" id="emailError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Your Message or Feedback *</label>
+            <textarea name="message" id="message" rows="5" placeholder="How can we assist you today? Please provide any relevant details..." required></textarea>
+            <span class="error-msg" id="messageError"></span>
+          </div>
+
+          <button type="submit" class="btn btn-gradient btn-lg full-width">
+            <i class="ri-send-plane-fill"></i> Send Message
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e){
+  if(!validateContactForm()) e.preventDefault();
+});
+</script>
+{% endblock %}
